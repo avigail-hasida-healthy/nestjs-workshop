@@ -99,7 +99,7 @@ export class PostDto {
 
 Open your browser and set the url to `http://localhost:3000/api/docs/`
 
-## ![Swagger](./images/011-swagger.gif)
+![Swagger](./images/011-swagger.gif)
 
 Beautiful, we have a blog api up and running!
 
