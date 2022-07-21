@@ -1,7 +1,8 @@
 # Swagger
 
 Let's add swagger to keep api documentation
-Nest provides a `@nestjs/swagger` package out-of-the-box to help load our all the api documentation into a swagger document. To use it, we first install the required dependency.
+
+Nest provides a `@nestjs/swagger` package out-of-the-box to help load all the api documentation into a swagger document. To use it, we first need to install the required dependency.
 
 Run
 
