@@ -67,21 +67,24 @@ Let’s create our User DTO (Data Transfer Object) schema. Inside the users fold
 
 ```typescript
 export class UserDto {
-readonly name: string;
-readonly email: string;
-readonly password: string;
-readonly gender: string;
+  readonly name: string;
+  readonly email: string;
+  readonly password: string;
+  readonly gender: string;
 }
-src/modules/users/dto/user.dto.ts
+```
+<sup>`src/modules/users/dto/user.dto.ts`</sup>
+
 User Repository provider
 Now, create a User Repository provider. Inside the user's folder, create a users.providers.ts file. This provider is used to communicate with the database.
 
+```typescript
 import { User } from './user.entity';
 import { USER_REPOSITORY } from '../../core/constants';
 
 export const usersProviders = [{
-provide: USER_REPOSITORY,
-useValue: User,
+  provide: USER_REPOSITORY,
+  useValue: User,
 }];
 ```
 
