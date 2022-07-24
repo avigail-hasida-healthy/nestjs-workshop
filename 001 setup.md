@@ -24,29 +24,4 @@ Your folder structure should look like this:
 
 ![folder structure](https://www.freecodecamp.org/news/content/images/2020/06/1_qLCtw-62xXAdTHXPy2JAMg.png)
 
-## Docker and Database Setup
-
-Create a new `docker-compose.yaml` file in the root folder.
-
-Copy and paste the following code:
-
-```yaml
-version: "3"
-services:
-  postgres-urine-service-dev:
-    image: "postgres:alpine"
-    ports:
-      - 5438:5432
-    environment:
-      POSTGRES_DB: blog_dev
-      POSTGRES_USER: blogger
-      POSTGRES_HOST_AUTH_METHOD: trust
-```
-
-Run on the terminal
-
-```bash
-docker compose up
-```
-
-Now we have a running postgres database and can move on to the [Next Step: Database](./002%20database.md)
+Now we have a running nestJs project lets start to build a blog api in the [Next Step: Database](./002%20database.md)
