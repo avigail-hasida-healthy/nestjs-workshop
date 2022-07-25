@@ -18,7 +18,7 @@ Creating, Reading, Updating, and Deleting a blog post
 
 Setting up Swagger for api documentation
 
-Lets start in the [Next Step: Setup](./001%20setup.md)
+Lets start with the [First Step: Setup](./001%20setup.md)
 
 ---
 
