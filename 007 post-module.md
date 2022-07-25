@@ -134,6 +134,10 @@ export class PostsModule {}
 Now, add our Post entity to our database provider. Import the Post entity inside the `database.providers.ts` file, add the Post to this method:
 
 ```typescript
+import { Post } from "src/modules/posts/post.entity";
+
+...
+
 sequelize.addModels([User, Post]);
 ```
 
@@ -176,13 +180,12 @@ export class PostsService {
   }
 
   async update(id, data, userId) {
-    const [numberOfAffectedRows, [updatedPost]] =
-      await this.postRepository.update(
-        { ...data },
-        { where: { id, userId }, returning: true }
-      );
+    const [numberOfAffectedRows] = await this.postRepository.update(
+      { ...data },
+      { where: { id, userId }, returning: true }
+    );
 
-    return { numberOfAffectedRows, updatedPost };
+    return numberOfAffectedRows;
   }
 }
 ```
@@ -261,8 +264,8 @@ export class PostsController {
     @Body() post: PostDto,
     @Request() req
   ): Promise<PostEntity> {
-    // get the number of row affected and the updated post
-    const { numberOfAffectedRows, updatedPost } = await this.postService.update(
+    // get the number of row affected
+    const numberOfAffectedRows = await this.postService.update(
       id,
       post,
       req.user.id
@@ -273,6 +276,9 @@ export class PostsController {
     if (numberOfAffectedRows === 0) {
       throw new NotFoundException("This Post doesn't exist");
     }
+
+    // get the updated post
+    const updatedPost = await this.postService.findOne(id);
 
     // return the updated post
     return updatedPost;

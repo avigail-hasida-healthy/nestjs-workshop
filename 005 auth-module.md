@@ -7,7 +7,7 @@ This module will handle user authentication (Login and Sign up).
 Run
 
 ```
-nest generate module /modules/auth.
+nest generate module /modules/auth
 ```
 
 This will automatically add this module to our root module `AppModule`
@@ -17,7 +17,7 @@ This will automatically add this module to our root module `AppModule`
 Run
 
 ```
-nest generate service /modules/auth.
+nest generate service /modules/auth
 ```
 
 This will automatically add this service to the `AuthModule`.
@@ -27,7 +27,7 @@ This will automatically add this service to the `AuthModule`.
 Run
 
 ```
-nest g co /modules/auth.
+nest g co /modules/auth
 ```
 
 This will automatically add this controller to the `AuthModule`.
@@ -89,7 +89,7 @@ We call the `validateUser()` method in the `AuthService` (we are yet to write th
 
 If a user is found and the credentials are valid, the user is returned so Passport can complete its tasks (e.g., creating the user property on the Request object), and the request handling pipeline can continue. If it's not found, we throw an exception and let our exceptions layer handle it.
 
-Now, add the `PassportModule`, `UserModuleand` `LocalStrategy` to our `AuthModule`.
+Now, add the `PassportModule`, `UserModule` and `LocalStrategy` to our `AuthModule`.
 
 ```typescript
 import { Module } from "@nestjs/common";
@@ -114,37 +114,36 @@ export class AuthModule {}
 Let’s implement the `validateUser()` method.
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import \* as bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service';
+import { Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class AuthService {
-constructor(private readonly userService: UsersService) { }
+  constructor(private readonly userService: UsersService) {}
 
-    async validateUser(username: string, pass: string) {
-        // find if user exist with this email
-        const user = await this.userService.findOneByEmail(username);
-        if (!user) {
-            return null;
-        }
-
-        // find if user password match
-        const match = await this.comparePassword(pass, user.password);
-        if (!match) {
-            return null;
-        }
-
-        // tslint:disable-next-line: no-string-literal
-        const { password, ...result } = user['dataValues'];
-        return result;
+  async validateUser(username: string, pass: string) {
+    // find if user exist with this email
+    const user = await this.userService.findOneByEmail(username);
+    if (!user) {
+      return null;
     }
 
-    private async comparePassword(enteredPassword, dbPassword) {
-        const match = await bcrypt.compare(enteredPassword, dbPassword);
-        return match;
+    // find if user password match
+    const match = await this.comparePassword(pass, user.password);
+    if (!match) {
+      return null;
     }
 
+    // tslint:disable-next-line: no-string-literal
+    const { password, ...result } = user["dataValues"];
+    return result;
+  }
+
+  private async comparePassword(enteredPassword, dbPassword) {
+    const match = await bcrypt.compare(enteredPassword, dbPassword);
+    return match;
+  }
 }
 ```
 
@@ -205,7 +204,7 @@ Here, we are extending `PassportStrategy`. Inside the `super()` we added some op
 `secretOrKey`: This is our secret key for the token. This will use the secret key in our `.env` file.
 The `validate(payload: any)` For the `jwt-strategy`, Passport first verifies the JWT’s signature and decodes the JSON. It then invokes our `validate()` method passing the decoded JSON as its single parameter. Based on the way JWT signing works, we're guaranteed that we're receiving a valid token that we have previously signed and issued to a valid user. We confirm if the user exists with the user payload id. If the user exists, we return the user object, and Passport will attach it as a property on the Request object. If the user doesn’t exist, we throw an Exception.
 
-Now, add the `JwtStrategy` and `JwtModule` to the `AuthModule`.:
+Now, add the `JwtStrategy` and `JwtModule` to the `AuthModule`:
 
 ```typescript
 import { Module } from "@nestjs/common";
@@ -239,73 +238,72 @@ We configure the `JwtModule` using `register()`, passing in a configuration obje
 Let’s add other methods we will need to login and create a new user in `AuthService`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import \* as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
+import { Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class AuthService {
-    constructor(
-      private readonly userService: UsersService,
-      private readonly jwtService: JwtService,
-    ) { }
+  constructor(
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService
+  ) {}
 
-    async validateUser(username: string, pass: string) {
-        // find if user exist with this email
-        const user = await this.userService.findOneByEmail(username);
-        if (!user) {
-            return null;
-        }
-
-        // find if user password match
-        const match = await this.comparePassword(pass, user.password);
-        if (!match) {
-            return null;
-        }
-
-        // tslint:disable-next-line: no-string-literal
-        const { password, ...result } = user['dataValues'];
-        return result;
+  async validateUser(username: string, pass: string) {
+    // find if user exist with this email
+    const user = await this.userService.findOneByEmail(username);
+    if (!user) {
+      return null;
     }
 
-    public async login(user) {
-        const token = await this.generateToken(user);
-        return { user, token };
+    // find if user password match
+    const match = await this.comparePassword(pass, user.password);
+    if (!match) {
+      return null;
     }
 
-    public async create(user) {
-        // hash the password
-        const pass = await this.hashPassword(user.password);
+    // tslint:disable-next-line: no-string-literal
+    const { password, ...result } = user["dataValues"];
+    return result;
+  }
 
-        // create the user
-        const newUser = await this.userService.create({ ...user, password: pass });
+  public async login(user) {
+    const token = await this.generateToken(user);
+    return { user, token };
+  }
 
-        // tslint:disable-next-line: no-string-literal
-        const { password, ...result } = newUser['dataValues'];
+  public async create(user) {
+    // hash the password
+    const pass = await this.hashPassword(user.password);
 
-        // generate token
-        const token = await this.generateToken(result);
+    // create the user
+    const newUser = await this.userService.create({ ...user, password: pass });
 
-        // return the user and the token
-        return { user: result, token };
-    }
+    // tslint:disable-next-line: no-string-literal
+    const { password, ...result } = newUser["dataValues"];
 
-    private async generateToken(user) {
-        const token = await this.jwtService.signAsync(user);
-        return token;
-    }
+    // generate token
+    const token = await this.generateToken(result);
 
-    private async hashPassword(password) {
-        const hash = await bcrypt.hash(password, 10);
-        return hash;
-    }
+    // return the user and the token
+    return { user: result, token };
+  }
 
-    private async comparePassword(enteredPassword, dbPassword) {
-        const match = await bcrypt.compare(enteredPassword, dbPassword);
-        return match;
-    }
+  private async generateToken(user) {
+    const token = await this.jwtService.signAsync(user);
+    return token;
+  }
 
+  private async hashPassword(password) {
+    const hash = await bcrypt.hash(password, 10);
+    return hash;
+  }
+
+  private async comparePassword(enteredPassword, dbPassword) {
+    const match = await bcrypt.compare(enteredPassword, dbPassword);
+    return match;
+  }
 }
 ```
 
@@ -364,7 +362,7 @@ Run
 npm run start:dev
 ```
 
-This runs the api server with a watch mode which reruns the server whenever a file is updated.
+This runs the api server on a watch mode which reruns the server whenever a file is updated.
 
 Now open your Postman application and make sure it's running. Send a `POST` request to `http://localhost:3000/api/v1/auth/signup` and input your body data to create a user. You should get a token and the user object returned.
 

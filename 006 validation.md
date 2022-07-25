@@ -5,7 +5,7 @@ Notice how we are not validating any of the user's input. Now, let’s add valid
 Run
 
 ```
-npm i class-validator class-transformer --save.
+npm i class-validator class-transformer --save
 ```
 
 Inside the `core` folder, create a `pipes` folder and then create `validate.pipe.ts` file. Copy and paste the following code:
@@ -178,3 +178,9 @@ Let’s try to create a user with an email that already exists in our database:
 ![Postman Signup - User Exists](./images/004-postman-signup-user-exists.png)
 
 Now we also have validation on our endpoints and we can move on to the [Next Step: Post Module](./007%20post-module.md)
+
+---
+
+### Further Read
+
+- https://www.npmjs.com/package/class-validator

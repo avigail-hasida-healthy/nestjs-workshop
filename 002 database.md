@@ -4,7 +4,7 @@ We’ll start by installing the following dependencies. Make sure your terminal 
 
 ```
 npm install -g sequelize
-npm install --save sequelize sequelize-typescript pg-hstore pg
+npm install --save sequelize sequelize-typescript sqlite3
 npm install --save-dev @types/sequelize
 npm install dotenv --save
 ```
@@ -14,7 +14,7 @@ Now, create a database module.
 Run
 
 ```
-nest generate module /core/database.
+nest generate module /core/database
 ```
 
 ## .env file
@@ -41,7 +41,7 @@ Nest provides a `@nestjs/config` package out-of-the-box to help load our `.env` 
 Run
 
 ```bash
-npm i --save @nestjs/config.
+npm i --save @nestjs/config
 ```
 
 Import the `@nestjs/config` into your app root module:
@@ -99,6 +99,8 @@ export const databaseProviders = [
 ```
 
 <sup>`src/core/database/database.providers.ts`</sup>
+
+Here we initiate `Sequelize` with a local in memory SQLite database.
 
 All our models will be added to the `sequelize.addModels([User, Post])` function. Currently, there are no models.
 

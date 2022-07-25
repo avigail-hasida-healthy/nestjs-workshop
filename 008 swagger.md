@@ -7,7 +7,7 @@ Nest provides a `@nestjs/swagger` package out-of-the-box to help load all the ap
 Run
 
 ```bash
-$ npm install --save @nestjs/swagger
+npm install --save @nestjs/swagger
 ```
 
 Once the installation process is complete, open the `main.ts` file and initialize Swagger using the `SwaggerModule`class:

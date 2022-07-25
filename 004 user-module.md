@@ -5,7 +5,7 @@ Let’s add a User module to handle all user-related operations and to keep tabs
 Run
 
 ```
-nest generate module /modules/users.
+nest generate module /modules/users
 ```
 
 This will automatically add this module to our root module `AppModule`.
@@ -15,7 +15,7 @@ This will automatically add this module to our root module `AppModule`.
 Run
 
 ```
-nest generate service /modules/users.
+nest generate service /modules/users
 ```
 
 This will automatically add this service to the `UsersModule`.
@@ -63,7 +63,7 @@ Here, we are specifying what our User table will contain. The `@Column()` decora
 
 ## User DTO
 
-Let’s create our User DTO (Data Transfer Object) schema. Inside the users folder, create a dto folder. Then create a user.dto.ts file inside it. Paste the following code in:
+Let’s create our User DTO (Data Transfer Object) schema. Inside the `users` folder, create a `dto` folder. Then create a `user.dto.ts` file inside it. Paste the following code in:
 
 ```typescript
 export class UserDto {
@@ -73,24 +73,28 @@ export class UserDto {
   readonly gender: string;
 }
 ```
+
 <sup>`src/modules/users/dto/user.dto.ts`</sup>
 
-User Repository provider
-Now, create a User Repository provider. Inside the user's folder, create a users.providers.ts file. This provider is used to communicate with the database.
+### User Repository provider
+
+Now, create a User Repository provider. Inside the `users` folder, create a `users.providers.ts` file. This provider is used to communicate with the database.
 
 ```typescript
-import { User } from './user.entity';
-import { USER_REPOSITORY } from '../../core/constants';
+import { User } from "./user.entity";
+import { USER_REPOSITORY } from "../../core/constants";
 
-export const usersProviders = [{
-  provide: USER_REPOSITORY,
-  useValue: User,
-}];
+export const usersProviders = [
+  {
+    provide: USER_REPOSITORY,
+    useValue: User,
+  },
+];
 ```
 
 <sup>`src/modules/users/users.providers.ts`</sup>
 
-Add this export `const USER_REPOSITORY = 'USER_REPOSITORY'`; to the constants `index.ts` file.
+Add this `export const USER_REPOSITORY = 'USER_REPOSITORY';` to the constants `index.ts` file.
 
 Also, add the user provider to the User module. Notice, we added the `UserService` to our exports array. That is because we’ll need it outside of the User Module.
 
@@ -150,30 +154,28 @@ We will use these methods later.
 Lastly, let’s add the User model to the `database.providers.ts` file `sequelize.addModels([User]);`.
 
 ```typescript
+import * as dotenv from "dotenv";
 import { Sequelize } from "sequelize-typescript";
-import { SEQUELIZE, DEVELOPMENT, TEST, PRODUCTION } from "../constants";
-import { databaseConfig } from "./database.config";
+import { Dialect } from "sequelize/types";
 import { User } from "../../modules/users/user.entity";
+import { SEQUELIZE } from "../constants";
+
+dotenv.config();
 
 export const databaseProviders = [
   {
     provide: SEQUELIZE,
     useFactory: async () => {
-      let config;
-      switch (process.env.NODE_ENV) {
-        case DEVELOPMENT:
-          config = databaseConfig.development;
-          break;
-        case TEST:
-          config = databaseConfig.test;
-          break;
-        case PRODUCTION:
-          config = databaseConfig.production;
-          break;
-        default:
-          config = databaseConfig.development;
-      }
-      const sequelize = new Sequelize(config);
+      const username = process.env.DB_USERNAME;
+      const password = process.env.DB_PASSWORD;
+      const database = process.env.DB_NAME;
+      const storage = process.env.DB_STORAGE;
+      const dialect = process.env.DB_DIALECT as Dialect;
+
+      const sequelize = new Sequelize(database, username, password, {
+        dialect,
+        storage,
+      });
       sequelize.addModels([User]);
       await sequelize.sync();
       return sequelize;
